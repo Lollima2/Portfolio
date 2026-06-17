@@ -215,9 +215,10 @@
   /* AVATAR / photo silhouette stand-in */
   .hero-avatar {
     position: absolute;
-    right: -2%; bottom: 0;
-    width: 900px !important;
-    height: auto !important;
+    right: 6%; bottom: 0;
+    width: 75vw !important;
+    max-width: 1024px;
+    height: 900px !important;
     display: flex; align-items: flex-end; justify-content: center;
     overflow: visible;
      opacity: 0; animation: fadeUp 0.8s 2s ease forwards;
@@ -229,8 +230,8 @@
   }
 
  .avatar-image {
-  width: 90% !important;
-  height: auto !important;
+  width: 100% !important;
+  height: 90% !important;
   max-width: 100%;
   object-fit: contain;
   object-position: bottom center;
@@ -246,7 +247,7 @@
   .hero-content {
     position: relative; z-index: 2;
     padding: 0 8vw;
-    max-width: 900px;
+    max-width: 1024px;
   }
   .hero-eyebrow {
     font-family: var(--mono); font-size: 0.72rem;
@@ -554,11 +555,24 @@
   .featured-project {
     display: grid; grid-template-columns: 1fr 1fr; gap: 0;
     border: 1px solid var(--border); margin-bottom: 2px;
-    transition: border-color 0.2s;
+    transition: border-color 0.4s var(--es), box-shadow 0.4s var(--es), transform 0.4s var(--es);
+    position: relative;
   }
-  .featured-project:hover { border-color: var(--border-hover); }
+  .featured-project:hover {
+    border-color: var(--border-hover);
+    box-shadow: 0 20px 60px -20px rgba(201,168,76,0.18);
+  }
   .featured-project.reverse .project-visual { order: 2; border-right: none; border-left: 1px solid var(--border); }
   .featured-project.reverse .project-info { order: 1; }
+
+  /* text-only variant: no project-visual, single column */
+  .featured-project.no-visual {
+    grid-template-columns: 1fr;
+  }
+  .featured-project.no-visual .project-info {
+    padding: 44px 56px;
+  }
+  .featured-project.no-visual .project-title { font-size: 30px; }
 
   .project-visual {
     background: var(--bg3); min-height: 320px;
@@ -566,7 +580,19 @@
     position: relative; overflow: hidden;
     border-right: 1px solid var(--border);
   }
-  .project-mockup { width: 80%; height: 80%; display: flex; align-items: center; justify-content: center; position: relative; }
+  .project-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(201,168,76,0.07) 0%, transparent 65%);
+    opacity: 0; transition: opacity 0.5s var(--es);
+    pointer-events: none;
+  }
+  .featured-project:hover .project-visual::before { opacity: 1; }
+  .project-mockup {
+    width: 80%; height: 80%; display: flex; align-items: center; justify-content: center; position: relative;
+    transition: transform 0.5s var(--es);
+  }
+  .featured-project:hover .project-mockup { transform: scale(1.04); }
 
   .mockup-coffee { display: flex; flex-direction: column; align-items: center; gap: 12px; }
   .mockup-phone {
@@ -629,6 +655,7 @@
   .project-tag {
     font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--muted); background: var(--bg3); padding: 4px 10px; border: 1px solid var(--border);
+    transition: border-color 0.25s, color 0.25s;
   }
   .project-tag.accent-tag { color: var(--gold); border-color: rgba(201,168,76,0.2); background: rgba(201,168,76,0.04); }
   .project-tag.mist-tag { color: var(--mist); border-color: rgba(168,181,200,0.25); background: rgba(168,181,200,0.06); }
@@ -636,10 +663,11 @@
   .project-title {
     font-family: var(--display); font-size: 34px; font-weight: 300;
     letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 16px; color: var(--paper);
+    word-break: break-word;
   }
   .project-title em { font-style: italic; color: var(--gold); }
   .project-desc { font-size: 14px; color: var(--muted); line-height: 1.7; margin-bottom: 24px; }
-  .project-metrics { display: flex; gap: 24px; margin-bottom: 28px; }
+  .project-metrics { display: flex; gap: 24px; margin-bottom: 28px; flex-wrap: wrap; }
   .metric { border-left: 2px solid var(--gold); padding-left: 10px; }
   .metric.mist { border-color: var(--mist); }
   .metric-val { font-size: 20px; font-weight: 700; color: var(--paper); line-height: 1; margin-bottom: 2px; }
@@ -649,9 +677,9 @@
     display: inline-flex; align-items: center; gap: 6px;
     font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase;
     color: var(--gold); text-decoration: none;
-    border: 1px solid rgba(201,168,76,0.25); padding: 8px 14px; transition: background 0.2s;
+    border: 1px solid rgba(201,168,76,0.25); padding: 8px 14px; transition: background 0.2s, transform 0.25s var(--es);
   }
-  .project-link:hover { background: rgba(201,168,76,0.06); }
+  .project-link:hover { background: rgba(201,168,76,0.06); transform: translateY(-2px); }
   .project-link.mist-link { color: var(--mist); border-color: rgba(168,181,200,0.25); }
   .project-link.mist-link:hover { background: rgba(168,181,200,0.06); }
   .project-link svg { width: 12px; height: 12px; }
@@ -659,16 +687,86 @@
   .mini-projects { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 2px; }
   .mini-project {
     background: var(--bg3); border: 1px solid var(--border); padding: 32px;
-    transition: border-color 0.2s; display: flex; flex-direction: column; gap: 12px;
+    transition: border-color 0.35s var(--es), transform 0.35s var(--es), box-shadow 0.35s var(--es);
+    display: flex; flex-direction: column; gap: 12px;
   }
-  .mini-project:hover { border-color: var(--border-hover); }
+  .mini-project:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px -16px rgba(201,168,76,0.16);
+  }
   .mini-project-num { font-family: var(--mono); font-size: 9px; color: var(--muted2); }
   .mini-project-title {
     font-family: var(--display); font-size: 26px; font-weight: 300;
     letter-spacing: -0.01em; margin-bottom: 4px; color: var(--paper);
+    word-break: break-word;
   }
   .mini-project-title em { font-style: italic; color: var(--gold); }
   .mini-project-desc { font-size: 13px; color: var(--muted); line-height: 1.6; flex: 1; }
+
+  /*  AWARDS & HONORS  */
+  #awards { background: var(--bg2); }
+  .awards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-top: 1rem;
+  }
+  .award-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 36px 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    transition: border-color 0.35s var(--es), transform 0.35s var(--es), box-shadow 0.35s var(--es);
+    position: relative;
+    overflow: hidden;
+  }
+  .award-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    opacity: 0; transition: opacity 0.35s ease; pointer-events: none;
+  }
+  .award-card:hover {
+    border-color: var(--border-hover);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px -16px rgba(201,168,76,0.18);
+  }
+  .award-card:hover::after { opacity: 1; }
+  .award-icon-wrap {
+    width: 96px; height: 96px;
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(201,168,76,0.05);
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .award-image {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+  .award-rank {
+    font-family: var(--display); font-size: 20px; font-weight: 600;
+    color: var(--gold); letter-spacing: -0.01em; line-height: 1.25;
+  }
+  .award-title {
+    font-family: var(--body); font-size: 14px; color: var(--paper);
+    line-height: 1.5; font-weight: 400;
+  }
+  .award-title em { font-style: italic; color: var(--mist); }
+  .award-meta { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 4px; }
+  .award-tag, .award-year {
+    font-family: var(--mono); font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--muted); background: rgba(255,255,255,0.03); padding: 4px 10px; border: 1px solid var(--border2);
+  }
+  .award-year { color: var(--gold); border-color: rgba(201,168,76,0.2); background: rgba(201,168,76,0.04); }
   .plinks { display: flex; gap: .5rem; flex-wrap: wrap; padding-top: 1rem; border-top: 1px solid var(--border); }
   .plink {
     display: inline-flex; align-items: center; gap: .4rem;
@@ -840,32 +938,71 @@
   color: rgba(201,168,76,0.35);
   white-space: nowrap; display: flex; align-items: center; gap: 1rem;
 }
-.sk-marquee-item::after { content: '�'; color: rgba(201,168,76,0.2); }
+.sk-marquee-item::after { content: '�'; color: rgba(201,168,76,0.2); }
 
   /*  LEADERSHIP  */
-  #leadership { background: var(--ink); }
+  #leadership {
+    background: linear-gradient(160deg, #0d0d0e 0%, #16213e 70%, #0d0d0e 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  #leadership::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 100% 0%, rgba(201,168,76,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
   .lead-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
+    gap: 1.5px;
+    position: relative; z-index: 1;
   }
   .lead-card {
+    background: rgba(255,255,255,0.02);
     border: 1px solid rgba(201,168,76,0.1);
-    padding: 2rem;
-    transition: border-color 0.3s ease, background 0.3s ease;
+    padding: 2.2rem;
+    position: relative; overflow: hidden;
+    transition: border-color 0.35s var(--es), background 0.35s var(--es), transform 0.35s var(--es), box-shadow 0.35s var(--es);
+  }
+  .lead-card::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 80% at 50% -10%, rgba(201,168,76,0.07) 0%, transparent 70%);
+    opacity: 0; transition: opacity 0.35s ease; pointer-events: none;
   }
   .lead-card:hover {
-    border-color: rgba(201,168,76,0.3);
+    border-color: rgba(201,168,76,0.32);
     background: rgba(201,168,76,0.03);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px -16px rgba(201,168,76,0.18);
+  }
+  .lead-card:hover::after { opacity: 1; }
+  .lead-card-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 1.4rem;
+  }
+  .lead-icon-wrap {
+    width: 44px; height: 44px; flex-shrink: 0;
+    border: 1px solid rgba(201,168,76,0.25);
+    background: rgba(201,168,76,0.05);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color 0.3s ease, transform 0.3s var(--es);
+  }
+  .lead-card:hover .lead-icon-wrap { transform: scale(1.08); border-color: rgba(201,168,76,0.5); }
+  .lead-icon-wrap svg { width: 20px; height: 20px; stroke: var(--gold); stroke-width: 1.5; fill: none; }
+  .lead-card-num {
+    font-family: var(--mono); font-size: 0.62rem;
+    letter-spacing: 0.15em; color: rgba(201,168,76,0.3);
   }
   .lead-role {
-    font-family: var(--display); font-size: 1.15rem;
-    color: var(--paper); margin-bottom: 0.3rem;
+    font-family: var(--display); font-size: 1.25rem;
+    color: var(--paper); margin-bottom: 0.35rem; line-height: 1.25;
   }
   .lead-org {
     font-family: var(--mono); font-size: 0.62rem;
     letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--gold); margin-bottom: 0.8rem;
+    color: var(--gold); margin-bottom: 1rem;
   }
   .lead-desc {
     font-size: 0.85rem; line-height: 1.7;
@@ -920,10 +1057,27 @@
   #contact {
     background: var(--ink);
     text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  #contact::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 65%),
+      radial-gradient(ellipse 50% 40% at 20% 100%, rgba(45,212,191,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  #contact::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none;
   }
   .contact-inner {
-    max-width: 700px; margin: 0 auto;
-    padding: 10rem 8vw;
+    max-width: 760px; margin: 0 auto;
+    padding: 9rem 8vw;
+    position: relative; z-index: 1;
   }
   .contact-big {
     font-family: var(--display);
@@ -933,19 +1087,42 @@
     margin-bottom: 1.5rem;
   }
   .contact-big em { color: var(--gold); font-style: italic; }
+
   .contact-links {
-    display: flex; gap: 2rem; justify-content: center;
-    flex-wrap: wrap; margin-top: 3rem;
+    display: flex; gap: 1.1rem; justify-content: center;
+    flex-wrap: wrap; margin-top: 3.2rem;
   }
   .contact-link {
-    font-family: var(--mono); font-size: 0.72rem;
-    letter-spacing: 0.15em; text-transform: uppercase;
-    color: var(--mist); text-decoration: none;
-    border-bottom: 1px solid rgba(168,181,200,0.3);
-    padding-bottom: 3px;
-    transition: color 0.2s, border-color 0.2s;
+    display: inline-flex; align-items: center; gap: 0.65rem;
+    font-family: var(--mono); font-size: 0.74rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--paper); text-decoration: none;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    padding: 0.9rem 1.5rem;
+    position: relative; overflow: hidden;
+    transition: border-color 0.3s var(--es), transform 0.3s var(--es), box-shadow 0.3s var(--es), color 0.3s ease;
   }
-  .contact-link:hover { color: var(--gold); border-color: rgba(201,168,76,0.5); }
+  .contact-link::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(201,168,76,0.14) 0%, transparent 70%);
+    opacity: 0; transition: opacity 0.3s ease; pointer-events: none;
+  }
+  .contact-link:hover {
+    color: var(--gold);
+    border-color: rgba(201,168,76,0.45);
+    transform: translateY(-3px);
+    box-shadow: 0 14px 34px -12px rgba(201,168,76,0.25);
+  }
+  .contact-link:hover::before { opacity: 1; }
+  .contact-link svg {
+    width: 16px; height: 16px; flex-shrink: 0;
+    fill: currentColor;
+    transition: transform 0.3s var(--es);
+  }
+  .contact-link:hover svg { transform: scale(1.1); }
+  .contact-link .contact-link-label { line-height: 1; }
 
   /*  FOOTER */
   footer {
@@ -992,18 +1169,77 @@
   }
 
   /*RESPONSIVE*/
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .about-grid { grid-template-columns: 1fr; gap: 3rem; }
   .about-visual { height: 280px; }
   .big-initial { font-size: 8rem; }
   .blog-grid { grid-template-columns: 1fr; }
   .nav-links { gap: 1.5rem; }
   .avatar-image {display: none;}
+
+  /* PROJECTS — tablet */
+  .featured-project,
+  .featured-project.reverse {
+    grid-template-columns: 1fr;
+  }
+  .featured-project .project-visual,
+  .featured-project.reverse .project-visual {
+    order: 1;
+    border-right: none;
+    border-left: none;
+    border-bottom: 1px solid var(--border);
+    min-height: 260px;
+  }
+  .featured-project .project-info,
+  .featured-project.reverse .project-info {
+    order: 2;
+    padding: 32px;
+  }
+  .project-title { font-size: 28px; }
+  .mini-project-title { font-size: 23px; }
+
+  /* AWARDS — tablet */
+  .awards-grid { grid-template-columns: 1fr; gap: 12px; }
+  .award-card { padding: 32px 24px; }
 }
   @media (max-width: 600px) {
     .nav-links { display: none; }
     .lead-grid { grid-template-columns: 1fr; }
     .avatar-image {display: none;}
+
+    /* PROJECTS — mobile */
+    #projects .section-inner { padding: 5rem 6vw; }
+    .featured-project { margin-bottom: 18px; border: 1px solid var(--border); }
+    .featured-project .project-visual { min-height: 200px; }
+    .project-mockup { width: 90%; height: 90%; }
+    .mockup-phone { width: 120px; height: 195px; }
+    .featured-project .project-info { padding: 24px 20px; gap: 20px; }
+    .featured-project.no-visual .project-info { padding: 24px 20px; }
+    .featured-project.no-visual .project-title { font-size: 24px; }
+    .project-title { font-size: 24px; margin-bottom: 12px; }
+    .project-desc { font-size: 13.5px; margin-bottom: 20px; }
+    .project-metrics { gap: 18px; margin-bottom: 22px; }
+    .metric-val { font-size: 17px; }
+    .project-links, .plinks { gap: 8px; }
+    .project-link, .plink { font-size: 9.5px; padding: 7px 12px; }
+
+    .mini-projects { grid-template-columns: 1fr; gap: 12px; margin-top: 12px; }
+    .mini-project { padding: 24px 20px; }
+    .mini-project-title { font-size: 21px; }
+    .mini-project-desc { font-size: 12.5px; }
+
+    /* AWARDS — mobile */
+    #awards .section-inner { padding: 5rem 6vw; }
+    .award-card { padding: 28px 20px; }
+    .award-icon-wrap { width: 76px; height: 76px; }
+    .award-rank { font-size: 18px; }
+    .award-title { font-size: 13px; }
+  }
+
+  @media (max-width: 380px) {
+    .project-metrics { gap: 14px; }
+    .metric { padding-left: 8px; }
+    .mockup-phone { width: 100px; height: 165px; }
   }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
@@ -1024,11 +1260,12 @@
 
 <!-- NAV -->
 <nav id="nav">
-  <a class="nav-logo" href="#hero">D.O.</a>
+  <a class="nav-logo" href="#hero">H.D.L.</a>
   <ul class="nav-links">
     <li><a href="#about">About</a></li>
     <li><a href="#experience">Experience</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#awards">Awards</a></li>
     <li><a href="#writing">Writing</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -1125,7 +1362,7 @@
       <div class="about-text reveal reveal-delay-1">
         <div class="section-label">About</div>
         <h2 class="section-title">Where <em>craft</em><br>meets code</h2>
-        <p>I'm a graduating Computer Science senior at Cavite State University just finished my thesis — a Coffee Leaf Disease and Pest detection system using SWAT-DCNN  with GPS geotagging and Chlorosis computation, now deployed to NCRDEC Indang. I've interned at DEVCON Philippines, led creative teams at AWS clubs, and shipped real products from AI chatbots to decentralized portfolios on ICP.
+        <p>I'm a graduating Computer Science senior at Cavite State University just finished my thesis — a Coffee Leaf Disease and Pest detection system using SWAT-DCNN  with GPS geotagging and Chlorosis computation for the NCRDEC Indang. I've interned at DEVCON Philippines, led creative teams at AWS clubs, and shipped real products from AI chatbots to decentralized portfolios on ICP.
         <p>I write on Medium and build in public — because I believe the best engineers are also the best communicators.</p>
         <div class="medium-row">
           <a class="medium-link" href="https://medium.com/@ocayhumprey/from-editing-to-coding-my-devcon-jumpstart-cohort-2-story-6236094e4da6" target="_blank" rel="noopener">↗ My DEVCON Cohort 2 Story</a>
@@ -1231,22 +1468,8 @@
       </div>
     </div>
 
-    <!-- 02 Chatbot -->
-    <div class="featured-project reverse reveal">
-      <div class="project-visual">
-        <div class="project-mockup">
-          <div class="mockup-chat">
-            <div class="chat-header">
-              <div class="chat-dot" style="background:#ff5f57"></div>
-              <div class="chat-dot" style="background:#febc2e"></div>
-              <div class="chat-dot" style="background:#28c840"></div>
-            </div>
-            <div class="chat-message">User: Show me office spaces in BGC under 50k/mo</div>
-            <div class="chat-message ai">AI: Found 12 listings matching your criteria...</div>
-            <div class="chat-message">User: Which has the best amenities?</div>
-          </div>
-        </div>
-      </div>
+    <!-- 02 Chatbot (text-only) -->
+    <div class="featured-project no-visual reveal">
       <div class="project-info">
         <div>
           <div class="project-number">02 / 06</div>
@@ -1268,18 +1491,8 @@
       </div>
     </div>
 
-    <!-- 03 DASH -->
-    <div class="featured-project reveal">
-      <div class="project-visual">
-        <div class="project-mockup">
-          <div class="mockup-dash">
-            <div class="dash-header">DASH &mdash; Accident Reports <span class="dash-badge">LIVE</span></div>
-            <div class="dash-row"><div class="dash-dot-red"></div><div class="dash-text">Sta. Rosa &mdash; Collision &middot; 2 mins ago</div></div>
-            <div class="dash-row"><div class="dash-dot-yellow"></div><div class="dash-text">Calamba &mdash; Near-miss &middot; 8 mins ago</div></div>
-            <div class="dash-row"><div class="dash-dot-green"></div><div class="dash-text">Los Banos &mdash; Resolved &middot; 15 mins ago</div></div>
-          </div>
-        </div>
-      </div>
+    <!-- 03 DASH (text-only) -->
+    <div class="featured-project no-visual reveal">
       <div class="project-info">
         <div>
           <div class="project-number">03 / 06</div>
@@ -1301,21 +1514,8 @@
       </div>
     </div>
 
-    <!-- 04 ResolvIT -->
-    <div class="featured-project reverse reveal">
-      <div class="project-visual">
-        <div class="project-mockup">
-          <div class="mockup-resolve">
-            <div class="resolve-header">
-              <span class="resolve-tab active">Open</span>
-              <span class="resolve-tab">In Progress</span>
-              <span class="resolve-tab">Resolved</span>
-            </div>
-            <div class="resolve-card">&#128308; Noise complaint &mdash; Brgy. Poblacion Uno<br>Filed: Jan 12, 2025 &middot; Pending review</div>
-            <div class="resolve-card">&#127841; Illegal structure &mdash; Lot 4B<br>Filed: Jan 10, 2025 &middot; Under review</div>
-          </div>
-        </div>
-      </div>
+    <!-- 04 ResolvIT (text-only) -->
+    <div class="featured-project no-visual reveal">
       <div class="project-info">
         <div>
           <div class="project-number">04 / 06</div>
@@ -1344,6 +1544,9 @@
         <div class="mini-project-title">KASAMA &mdash; <em>AI Business Mentor</em></div>
         <p class="mini-project-desc">AI-powered business mentorship platform for Filipino MSMEs, built at c(Old)(ST)art Hackathon 2024. Recognized for its advanced backend architecture.</p>
         <div class="project-meta"><span class="project-tag">AI</span><span class="project-tag">Backend</span></div>
+        <div class="project-metrics">
+            <div class="metric"><div class="metric-val">Futuristic Tech Master Award</div><div class="metric-label">c(Old)(ST)art Hackathon 2024</div></div>
+        </div>
         <div class="project-links">
           <a href="https://www.figma.com/proto/IYZifXwXnIxGRYJ5IZLnVk/KASAMA?node-id=0-1&t=as3q0C22T5l4yZOA-1" class="project-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 24c2.208 0 4-1.792 4-4v-4H8c-2.208 0-4 1.792-4 4s1.792 4 4 4z"/><path d="M4 12c0-2.208 1.792-4 4-4h4v8H8c-2.208 0-4-1.792-4-4z"/><path d="M4 4c0-2.208 1.792-4 4-4h4v8H8C5.792 8 4 6.208 4 4z"/><path d="M12 0h4c2.208 0 4 1.792 4 4s-1.792 4-4 4h-4V0z"/><path d="M20 12c0 2.208-1.792 4-4 4s-4-1.792-4-4 1.792-4 4-4 4 1.792 4 4z"/></svg>Figma</a>
         </div>
@@ -1353,9 +1556,50 @@
         <div class="mini-project-title">ICP <em>Folio</em></div>
         <p class="mini-project-desc">Decentralized portfolio system built on ICP. Coordinated UI/UX integration for public deployment, exploring the frontier of on-chain identity and creative work.</p>
         <div class="project-meta"><span class="project-tag">ICP Blockchain</span><span class="project-tag">UI/UX</span></div>
+          <div class="project-metrics">
+            <div class="metric"><div class="metric-val">2025</div><div class="metric-label">DEVCON PH</div></div>
+          </div>
         <div class="project-links">
           <a href="https://sq33x-raaaa-aaaai-atiaa-cai.icp0.io/" class="project-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Frontend</a>
           <a href="https://a4gq6-oaaaa-aaaab-qaa4q-cai.raw.icp0.io/?id=hancb-ryaaa-aaaai-ath7q-cai" class="project-link mist-link" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Backend</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="wipe-bar bottom"></div>
+</section>
+
+<!-- AWARDS & HONORS -->
+<section id="awards">
+  <div class="wipe-bar top"></div>
+  <div class="section-inner">
+    <div class="section-label reveal">Recognition</div>
+    <h2 class="section-title reveal reveal-delay-1">Awards &amp; <em>honors</em></h2>
+
+    <div class="awards-grid">
+      <div class="award-card reveal">
+        <div class="award-icon-wrap"><img class="award-image" src="images/award-hack4aprogress.png" alt="1st Runner-Up, DOST CALABARZON Hack4AProgress 2024"></div>
+        <div class="award-rank">1st Runner-Up</div>
+        <div class="award-title">DOST CALABARZON <em>Hack4AProgress</em></div>
+        <div class="award-meta">
+          <span class="award-year">2024</span>
+        </div>
+      </div>
+      <div class="award-card reveal reveal-delay-1">
+        <div class="award-icon-wrap"><img class="award-image" src="images/award-coldstart.png" alt="Futuristic Tech Master Award, c(Old)(ST)art Hackathon 2024"></div>
+        <div class="award-rank">Futuristic Tech Master Award</div>
+        <div class="award-title">c(Old)(ST)art <em>Hackathon</em></div>
+        <div class="award-meta">
+          <span class="award-year">2024</span>
+        </div>
+      </div>
+      <div class="award-card reveal reveal-delay-2">
+        <div class="award-icon-wrap"><img class="award-image" src="images/award-devcon.png" alt="Cohort 2 Completion, Developers Connect Philippines 2025"></div>
+        <div class="award-rank">Cohort 2 Completion</div>
+        <div class="award-title">Developers Connect <em>Philippines</em></div>
+        <div class="award-meta">
+          <span class="award-year">2025</span>
         </div>
       </div>
     </div>
@@ -1519,9 +1763,18 @@
       Whether it's a project, collaboration, or just a conversation — I'm always open.
     </p>
     <div class="contact-links reveal reveal-delay-3">
-      <a class="contact-link" href="mailto:dwightocay@gmail.com">dwightocay@gmail.com</a>
-      <a class="contact-link" href="https://linkedin.com/in/lewis-ocay" target="_blank" rel="noopener">LinkedIn</a>
-      <a class="contact-link" href="https://github.com/Lollima2" target="_blank" rel="noopener">GitHub</a>
+      <a class="contact-link" href="mailto:dwightocay@gmail.com">
+        <svg viewBox="0 0 24 24"><path d="M2 5.5A2.5 2.5 0 0 1 4.5 3h15A2.5 2.5 0 0 1 22 5.5v13a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 18.5v-13zm2.2.5 7.3 6.1a1 1 0 0 0 1 0L19.8 6H4.2zM4 7.9V18.5c0 .28.22.5.5.5h15a.5.5 0 0 0 .5-.5V7.9l-6.99 5.83a3 3 0 0 1-3.02 0L4 7.9z"/></svg>
+        <span class="contact-link-label">dwightocay@gmail.com</span>
+      </a>
+      <a class="contact-link" href="https://linkedin.com/in/lewis-ocay" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.38-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.8 0 0 .78 0 1.75v20.5C0 23.22.8 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.75V1.75C24 .78 23.2 0 22.22 0z"/></svg>
+        <span class="contact-link-label">LinkedIn</span>
+      </a>
+      <a class="contact-link" href="https://github.com/Lollima2" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.42c.58.1.79-.25.79-.56v-2.17c-3.2.7-3.88-1.4-3.88-1.4-.53-1.33-1.29-1.68-1.29-1.68-1.05-.72.08-.7.08-.7 1.17.08 1.78 1.2 1.78 1.2 1.03 1.76 2.7 1.25 3.36.96.1-.75.41-1.26.74-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.18 1.18a11 11 0 0 1 5.79 0c2.2-1.49 3.17-1.18 3.17-1.18.64 1.59.24 2.76.12 3.05.74.81 1.18 1.84 1.18 3.1 0 4.42-2.69 5.4-5.25 5.68.42.36.78 1.08.78 2.17v3.22c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg>
+        <span class="contact-link-label">GitHub</span>
+      </a>
     </div>
   </div>
 </section>
@@ -1560,7 +1813,7 @@ document.addEventListener('mousemove', e => {
   cursorRing.style.top  = ry + 'px';
   requestAnimationFrame(animRing);
 })();
-document.querySelectorAll('a, button, .proj-card, .lead-card, .blog-card').forEach(el => {
+document.querySelectorAll('a, button, .proj-card, .lead-card, .blog-card, .award-card').forEach(el => {
   el.addEventListener('mouseenter', () => {
     cursor.style.transform = 'translate(-50%,-50%) scale(2)';
     cursorRing.style.width  = '60px';
@@ -1631,4 +1884,3 @@ window.addEventListener('scroll', () => {
 </script>
 </body>
 </html>
-
