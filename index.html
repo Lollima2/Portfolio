@@ -41,10 +41,15 @@
     color: var(--paper);
     font-family: var(--body);
     overflow-x: hidden;
-    cursor: none;
+  }
+  @media (pointer: fine) {
+    html { cursor: none; }
   }
 
   /*  CUSTOM CURSOR  */
+  @media (pointer: coarse) {
+    #cursor, #cursor-ring { display: none !important; }
+  }
   #cursor {
     position: fixed; top: 0; left: 0; z-index: 9999;
     width: 10px; height: 10px;
@@ -938,7 +943,7 @@
   color: rgba(201,168,76,0.35);
   white-space: nowrap; display: flex; align-items: center; gap: 1rem;
 }
-.sk-marquee-item::after { content: '�'; color: rgba(201,168,76,0.2); }
+.sk-marquee-item::after { content: '·'; color: rgba(201,168,76,0.2); }
 
   /*  LEADERSHIP  */
   #leadership {
@@ -1031,12 +1036,22 @@
     transform: translateY(-4px);
   }
   .blog-card::after {
-    content: '↗';
+    content: '';
     position: absolute; top: 1.5rem; right: 1.5rem;
-    font-size: 1.2rem; color: var(--gold); opacity: 0.4;
+    width: 18px; height: 18px;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M3 13L13 3M13 3H6M13 3V10' stroke='%23C9A84C' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-size: contain;
+    opacity: 0.4;
     transition: opacity 0.2s, transform 0.2s;
   }
   .blog-card:hover::after { opacity: 1; transform: translate(3px,-3px); }
+  /* Shared SVG arrow in medium-links */
+  .link-arrow {
+    width: 12px; height: 12px;
+    vertical-align: middle;
+    display: inline-block;
+    margin-right: 2px;
+  }
   .blog-platform {
     font-family: var(--mono); font-size: 0.62rem;
     letter-spacing: 0.15em; text-transform: uppercase;
@@ -1244,6 +1259,38 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
   }
+
+  /* ── MOBILE ANIMATION FIXES ───────────────────────────────────────── */
+  @media (max-width: 768px) {
+    /* Slow marquees down — small viewport makes the same duration feel 3× faster */
+    .marquee-track { animation-duration: 40s !important; }
+    .sk-marquee    { animation-duration: 44s !important; }
+
+    /* Tone down hero bg drift — subtle on desktop, dizzying on mobile */
+    @keyframes heroDrift {
+      0%   { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.015) translate(-0.5%, 0.5%); }
+    }
+
+    /* Floating frames — reduce travel distance */
+    @keyframes frameFloat {
+      0%, 100% { transform: translateY(0) rotate(0deg); }
+      33%       { transform: translateY(-5px) rotate(0.5deg); }
+      66%       { transform: translateY(4px) rotate(-0.25deg); }
+    }
+
+    /* Orb pulse — keep it subtle */
+    @keyframes orbPulse {
+      0%, 100% { transform: scale(1);    opacity: 0.5; }
+      50%       { transform: scale(1.03); opacity: 0.8; }
+    }
+
+    /* Reveal animations — shorter distance on small screens */
+    .reveal {
+      transform: translateY(16px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1365,8 +1412,8 @@
         <p>I'm a graduating Computer Science senior at Cavite State University just finished my thesis — a Coffee Leaf Disease and Pest detection system using SWAT-DCNN  with GPS geotagging and Chlorosis computation for the NCRDEC Indang. I've interned at DEVCON Philippines, led creative teams at AWS clubs, and shipped real products from AI chatbots to decentralized portfolios on ICP.
         <p>I write on Medium and build in public — because I believe the best engineers are also the best communicators.</p>
         <div class="medium-row">
-          <a class="medium-link" href="https://medium.com/@ocayhumprey/from-editing-to-coding-my-devcon-jumpstart-cohort-2-story-6236094e4da6" target="_blank" rel="noopener">↗ My DEVCON Cohort 2 Story</a>
-          <a class="medium-link" href="https://medium.com/@ocayhumprey/canvasing-stories-frame-by-frame-my-journey-at-devcon-jumpstart-internship-cohort-2-67cacc914409" target="_blank" rel="noopener">↗ CANVAsing Stories</a>
+          <a class="medium-link" href="https://medium.com/@ocayhumprey/from-editing-to-coding-my-devcon-jumpstart-cohort-2-story-6236094e4da6" target="_blank" rel="noopener"><svg class="link-arrow" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> My DEVCON Cohort 2 Story</a>
+          <a class="medium-link" href="https://medium.com/@ocayhumprey/canvasing-stories-frame-by-frame-my-journey-at-devcon-jumpstart-internship-cohort-2-67cacc914409" target="_blank" rel="noopener"><svg class="link-arrow" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 13L13 3M13 3H6M13 3V10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> CANVAsing Stories</a>
         </div>
         <div class="about-tags">
           <span class="tag">Python</span>
